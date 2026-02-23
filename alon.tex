@@ -1,0 +1,457 @@
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{titlesec}
+\usepackage{xpatch}
+
+\usepackage{hyperref}
+\usepackage[capitalize]{cleveref}
+\hypersetup{
+    colorlinks=true,
+    allcolors=black,
+}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{exercise}[definition]{Exercise}
+
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+\newtheorem{claim}[definition]{Claim}
+
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\makeatletter
+\newcounter{proofstep}
+\xpretocmd{\proof}{\setcounter{proofstep}{0}}{}{}
+\newcommand{\proofstep}[1]{%
+  \par
+  \addvspace{\medskipamount}%
+  \stepcounter{proofstep}%
+  \noindent\emph{Step \theproofstep: #1}\par\nobreak\smallskip
+  \@afterheading
+}
+\makeatother
+
+\renewcommand\qedsymbol{$\square$}
+\renewcommand{\theenumi}{(\roman{enumi})}
+\renewcommand{\labelenumi}{(\roman{enumi})}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[toc]{appendix}
+\usepackage[backend=biber, style=numeric]{biblatex}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage[inline]{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1.25in]{geometry}
+\usepackage{mathtools}
+\usepackage{physics}
+%\usepackage{subfiles}
+\usepackage{tikz-cd}
+
+\titleformat*{\section}{\centering\scshape}
+\titlelabel{\thetitle.\;}
+
+\begin{document}
+
+\section{Alterations}
+\label{sec:alterations}
+\begin{exercise}
+    Prove that the Ramsey number \( R(k, k) \) satisfies
+    \begin{equation*}
+        R(k,k) > n - \binom{n}{k} 2^{1 - \binom{k}{2}}
+    \end{equation*}
+    for every integer \( n \). Conclude that
+    \begin{equation*}
+        R(k,k) > \big( 1- o(1) \big)\frac{k}{e} 2^{k/2}.
+    \end{equation*}
+\end{exercise}
+\begin{solution}
+    Consider \( K_n \) and color each edge either blue or red uniformly and independently. The expected number of clques is \( 2 \binom{n}{k} 2^{- \binom{k}{2}} \), so there exists one coloring with at most that many cliques. Remove one vertex from every clique. Then, we are left with a graph on at least \( n - \binom{n}{k} 2^{1 - \binom{k}{2}} \) vertices that has no \( k \)-cliques. This shows the first statement. As for the second, note that
+    \begin{equation*}
+        n - \binom{n}{k} 2^{1 - \binom{k}{2}} \geq n - \bigg( \frac{en}{k} \bigg)^k 2^{1 - \binom{k}{2}},
+    \end{equation*}
+    so we are going to (sort of) maximize the right-hand side in \( n \). Choose \( n = \frac{k}{e}2^{k/2} \). Then, a simple calculation shows that
+    \begin{equation*}
+        n - \bigg( \frac{en}{k} \bigg)^k 2^{1 - \binom{k}{2}} = \bigg(\frac{k}{e} - 2 \bigg) 2^{k/2} = \big( 1- o(1) \big)\frac{k}{e} 2^{k/2}.
+    \end{equation*}
+\end{solution}
+
+\begin{exercise}
+    Prove that the Ramsey number \( R(4, k) \) satisfies \( R(4, k) \geq \Omega \bigg( \frac{k^2}{(\log{k})^2} \bigg) \).
+\end{exercise}
+\begin{solution}
+    A basic probabilistic argument as in the book gives
+    \begin{equation*}
+        R(4, k) \geq n - \binom{n}{4} p^6 -  \binom{n}{k} (1-p)^{\binom{k}{2}}.
+    \end{equation*}
+    So, the task is to tame the latter two terms in terms of \( n \). We set (with foresight) \( n = c \frac{k^2}{(\log{k})^2} \), for \( c \) to be determined. We have
+    \begin{equation*}
+        \binom{n}{4} p^6 < \frac{n^4}{24} p^6
+    \end{equation*}
+    and we want this term to be smaller than \( Cn \) for \( C \leq 1 \). A simple calculation shows that \( p = \frac{1}{\sqrt{n}} \) is (just) enough. As for the second term,
+    \begin{equation*}
+        \begin{aligned}
+            \binom{n}{k} (1-p)^{\binom{k}{2}} &\leq \bigg( \frac{en}{k} \bigg)^k e^{-p \binom{k}{2}} \\
+            &\sim \bigg( \frac{eck}{(\log{k})^2} \bigg)^k e^{-p \frac{k^2}{2}} \\
+            &= \bigg( \frac{eck}{(\log{k})^2} \bigg)^k e^{-\frac{1}{2 \sqrt{c}} k \log{k}}.
+        \end{aligned}
+    \end{equation*}
+    Choosing \( c = \frac{1}{4} \), we obtain
+    \begin{equation*}
+        \begin{aligned}
+            \bigg( \frac{eck}{(\log{k})^2} \bigg)^k e^{-\frac{1}{2 \sqrt{c}} k \log{k}} &=
+            \bigg( \frac{ek}{(4\log{k})^2} \bigg)^k e^{- k \log{k}} \\
+            &= \frac{e^k}{4^k (\log{k})^{2k}}.
+        \end{aligned}
+    \end{equation*}
+    This finishes the proof.
+\end{solution}
+
+\begin{exercise}
+    Prove that any \( 3 \)-uniform hypergraph with \( n \) vertices and \( m \geq \frac{n}{3} \) edges contains an independent set of size at least \( \frac{2 n^{\frac{3}{2}}}{3 \sqrt{3m}} \).
+\end{exercise}
+\begin{solution}
+    Construct a random subgraph \( H \) by sampling each vertex independently with probability \( p \).
+    Let \( X = n(H) \) and \( Y = e(H) \). The idea is then to remove one vertex from any edge in \( H \), which gives an independent set on at least \( X-Y \) vertices. Clearly, \( E(X-Y) = np - mp^3 \) so there is an independent set of size at least \( np - mp^3 \). Optimizing over \( p \in [0, 1] \), we obtain \( p^2 = \frac{n}{3m} \). Note that \( p \leq 1 \) by the assumption that \( n \leq 3m \). Plugging \( p \) back in gives the result.
+\end{solution}
+
+\begin{exercise}
+    Show that there is a finite \( n_0 \) such that any directed graph on \( n > n_0 \) vertices in which each outdegree is at least \( \log_2 n - \frac{1}{10} \log_2 \log_2 n \) contains an even simple directed cycle.
+even simple directed cycle.
+\end{exercise}
+\begin{solution}
+    The idea is to show existence of a bipartite subgraph in which every vertex has outdegree at least \( 1 \). In order to do so, partition the set of vertices into two sets \( A, B \) by placing each vertex in \( A \) with probability \( \frac{1}{2} \) independently. Consider a vertex \( v \) and suppose for the sake of clarity that \( v \in A \). We say that \( v \) is \textit{bad} if
+    \begin{equation*}
+        \begin{aligned}
+            &N^+(v) \subseteq A, \text{ or } \\
+            &\forall w \in N^+(v) \cap B \colon N^+(w) \subseteq B.
+        \end{aligned}
+    \end{equation*}
+    Let \( d_v^+ \) be the outdegree of \( v \) and \( \delta^+ = \min_{v \in V} d^+_v \geq \log_2 n - \frac{1}{10} \log_2 \log_2 n \). Given a vertex \( v \), we estimate the probability of it being bad as follows: if \( w_1, \dots w_k \in N^+(v) \cap B \), we have
+    \begin{equation*}
+        P \big( \forall i \colon N^+(w_i) \subseteq B \big) = \bigg( \frac{1}{2} \bigg)^{\abs{\bigcup_{i=1}^k N^+(w_i)}} \leq \bigg( \frac{1}{2} \bigg)^{\delta^+}
+    \end{equation*}
+    and
+    \begin{equation*}
+        \begin{aligned}
+            P(v \text{ is bad}) &= \bigg( \frac{1}{2} \bigg)^{d^+_v} + \sum_{k = 1}^{d_v^+} \binom{d_v^+}{k} \bigg( \frac{1}{2} \bigg)^{d^+_v} P \big( \forall i \colon N^+(w_i) \subseteq B \big) \\
+            &\leq \bigg( \frac{1}{2} \bigg)^{d^+_v} + \sum_{k = 1}^{d_v^+} \binom{d_v^+}{k} \bigg( \frac{1}{2} \bigg)^{d^+_v} \bigg( \frac{1}{2} \bigg)^{\delta^+} \\
+            &\leq \bigg( \frac{1}{2} \bigg)^{\delta^+} + \sum_{k = 1}^{d_v^+} \binom{d_v^+}{k} \bigg( \frac{1}{2} \bigg)^{d^+_v} \bigg( \frac{1}{2} \bigg)^{\delta^+} \\
+            &\leq \bigg( \frac{1}{2} \bigg)^{\delta^+ - 1}.
+        \end{aligned}
+    \end{equation*}
+    Thus, by linearity of expectation, the expected number of bad vertices is bounded by
+    \begin{equation*}
+        2n \bigg( \frac{1}{2} \bigg)^{\delta^+ - 1} \leq 2n \bigg( \frac{1}{2} \bigg)^{\log_2 n - \frac{1}{10} \log_2 \log_2 n} = 2 (\log_2{n})^{\frac{1}{10}}.
+    \end{equation*}
+    Therefore, there exists a partition \( A \cup B = V \) with no more than \( 2 (\log_2{n})^{\frac{1}{10}} \) bad vertices. Removing those, we are left with a bipartite graph on at least \( n - 2 (\log_2{n})^{\frac{1}{10}} \) vertices (assume \( n \) large so that we have enough vertices to form an even cycle) in which every vertex has outdegree at least \( 1 \). Now hop back and forth between the two sides of the bipartite graph until you land on vertex you have already visited. This is the desired even directed cycle.
+\end{solution}
+
+\section{The second moment}
+\label{sec:the second moment}
+\begin{exercise}[Alon 4.8.1]
+    Let \( X \) be a random variable taking integral nonnegative values. Prove that \( P(X = 0) \leq \frac{\operatorname{Var}(X)}{E(X^2)} \).
+\end{exercise}
+\begin{solution}
+    If \( X \equiv 0 \), I am not sure how the right-hand side makes sense so let us assume \( P(X = 0) < 1 \), which implies that \( E(X) > 0 \). Fix \( \theta \in (0, 1) \). By the Paley-Zygmund inequality,
+    \begin{equation*}
+        P\big(X \geq \theta E(X)\big) \geq (1-\theta)^2 \frac{E(X)^2}{E(X^2)},
+    \end{equation*}
+    which implies that
+    \begin{equation*}
+        \begin{aligned}
+            P(X=0) &\leq P \big(X < \theta E(X)\big) \\
+            &= 1 - P \big(X \geq \theta E(X)\big) \\
+            &\leq 1 - (1-\theta)^2 \frac{E(X)^2}{E(X^2)} \to 1 - \frac{E(X)^2}{E(X^2)} = \frac{\operatorname{Var}(X)}{E(X^2)}
+        \end{aligned}
+    \end{equation*}
+    as \( \theta \to 0 \).
+\end{solution}
+
+\begin{exercise}[Alon 4.8.2]
+    Show that there is a positive constant \( c \) such that the following holds. For any \( n \) reals \( a_1, \dots, a_n \) satisfying \( \sum_i^n a_i^2 = 1 \), if \( (\epsilon_1, \dots, \epsilon_n) \) is a \( \{ -1, 1 \} \)-random vector obtained by choosing each \( \epsilon_i \) randomly and independently with uniform distribution to be either \( -1 \) or \( 1 \), then \( P(\abs{\sum_i^n \epsilon_i a_i} \leq 1) \geq c \).
+\end{exercise}
+\begin{solution}
+    This solution is taken from \href{https://math.stackexchange.com/questions/3966216/there-is-a-positive-constant-c-such-that-for-any-n-real-numbers-a-i-with}{\texttt{this StackExchange post}}.
+
+    Without loss of generality, we can assume that \( a_1 \geq a_2 \geq \dots \geq a_n \geq 0 \). Assume first that \( a_1 \geq \frac{1}{2} \). Then, Chebyshev's inequality yields
+    \begin{equation*}
+        P \bigg(\abs{\sum_{i=2}^n \epsilon_i a_i} \geq 1 + a_1 \bigg) \leq \frac{1-a_1^2}{(1+a_1)^2} = \frac{1-a_1}{1+a_1} \leq \frac{1}{3}.
+    \end{equation*}
+    Hence, \( P ( \abs{\sum_{i=2}^n \epsilon_i a_i} < 1 + a_1 ) \geq \frac{2}{3} \). Since the distribution of \( \sum_{i=2}^n \epsilon_i a_i \) is symmetric around \( 0 \), we get \( P ( -1 - a_1 < \sum_{i=2}^n \epsilon_i a_i \leq 0 ) \geq \frac{1}{3} \). Now, \( \epsilon_1 a_1 \) has \( \frac{1}{2} \) probability of being equal to \( a_1 \), so \( \sum_1^n \epsilon_i a_i \) has at least \( \frac{1}{6} \) probability of lying in the interval \( (-1, a_1) \subseteq [-1, 1] \). Hence, \( P(\abs{\sum_i^n \epsilon_i a_i} \leq 1) \geq \frac{1}{6} \).
+
+    Suppose now \( a_1 < \frac{1}{2} \). Then, we can partition \( \{ a_1, \dots, a_n \} \) into two groups \( \{ b_i \} \) and \( \{ c_j \} \) such that \( \sum b_i^2, \sum c_j^2 \in \big[\frac{3}{8}, \frac{5}{8}\big] \) (this can be done as follows: pick \( a_i \)'s in succession until the sum of squares exceeds \( \frac{3}{8} \). The sum of the squares of the elements we picked cannot exceed \( \frac{3}{8} + \frac{1}{4} = \frac{5}{8} \), since \( a_i \leq a_1 \leq \frac{1}{2} \). Since \( \sum_{i=1}^n a_i^2 = 1 \), the sum of the squares of the remaining terms also lies in \( \big[ \frac{3}{8}, \frac{5}{8} \big] \)). By Chebyshev's, we have
+    \begin{equation*}
+        \begin{aligned}
+            P \bigg( \abs{\sum \epsilon_i b_i} \geq 1 \bigg) &\leq \sum b_i^2, \\
+            P \bigg( \abs{\sum \epsilon_j c_j} \geq 1 \bigg) &\leq \sum c_j^2 \\
+        \end{aligned}
+    \end{equation*}
+    and the sums \( \sum \epsilon_i b_i \) and \( \sum \epsilon_j c_j \) have \( \frac{1}{2} \) chance of having different signs. Thus, the probability that \(  \abs{\sum \epsilon_i b_i} < 1 \), \( \abs{\sum \epsilon_j c_j} < 1 \) and that the two sums have different signs is at least \( \frac{1}{2}(1- \sum b_i^2) (1 - \sum c_j^2) > 0 \). This shows that \( P(\abs{\sum_i^n \epsilon_i a_i} \leq 1) \geq \frac{1}{2}(1- \sum b_i^2) (1 - \sum c_j^2) \), concluding the proof.
+\end{solution}
+
+\begin{exercise}[Alon 4.8.3]
+    Show that there is a positive constant \( c \) such that the following holds. For any \( n \) vectors \( a_1, \dots, a_n \in \mathbb{R}^2 \) satisfying \( \sum_{i=1}^n \norm{a_i}^2 = 1 \) and \( \norm{a_i}^2 = \frac{1}{10} \), if \( (\epsilon_1, \dots, \epsilon_n) \) is a \( \{ -1, 1 \} \)-random vector obtained by choosing each \( \epsilon_i \) randomly and independently with uniform distribution to be either \( -1 \) or \( 1 \), then
+    \begin{equation*}
+        P \bigg( \norm{\sum_{i=1}^n \epsilon_i a_i} \leq \frac{1}{3} \bigg) \geq c.
+    \end{equation*}
+\end{exercise}
+\begin{solution}
+    Write one.
+\end{solution}
+
+\begin{exercise}[Alon 4.8.4]
+    Let \( X \) be a random variable with \( E(X) = 0 \) and variance \( \sigma^2 \). Prove that for all \( \lambda > 0 \), \( P(X \geq \lambda) \leq \frac{\sigma^2}{\sigma^2 + \lambda^2} \).
+\end{exercise}
+\begin{solution}
+    For every \( x \in \mathbb{R} \),
+    \begin{equation*}
+        \begin{aligned}
+            P(X \geq \lambda) &= P(X+x \geq \lambda + x) \\
+            &\leq P \big( (X+x)^2 \geq (\lambda + x)^2 \big) \\
+            &\leq \frac{E\big( (X+x)^2 \big)}{(\lambda + x)^2} \\
+            &= \frac{\sigma^2 + x^2}{(\lambda + x)^2}.
+        \end{aligned}
+    \end{equation*}
+    The function on right-hand side is minimized at \( x = \frac{\sigma^2}{\lambda} \), which gives the desired result.
+\end{solution}
+
+\begin{exercise}[Alon 4.8.5]
+    Let \( v_i = (x_i, y_i), \dots, v_n = (x_n, y_n) \) be \( n \) two-dimensional vectors, where each \( x_i \) and each \( y_i \) is an integer whose absolute value does not exceed \( \frac{2^{n/2}}{100 \sqrt{n}} \). Show that there are two disjoint sets \( I, J \subseteq {1, \dots, n} \) such that
+    \begin{equation*}
+        \sum_{i \in I} v_i = \sum_{j \in J} v_j
+    \end{equation*}
+\end{exercise}
+\begin{solution}
+    Consider independent \( \frac{1}{2} \)-Bernoulli random variables \( \epsilon_i \) and consider the random variables
+    \begin{equation*}
+            X = \sum_{i=1}^n \epsilon_i x_i, \quad
+            Y = \sum_{i=1}^n \epsilon_i y_i.
+    \end{equation*}
+    Their expected value and variance is
+    \begin{equation*}
+        \begin{aligned}
+            E(X) &= \frac{1}{2} \sum_{i=1}^n x_i, \quad \operatorname{Var}(X) = \frac{1}{4} \sum_{i=1}^n x_i^2 \leq \frac{1}{4} \frac{2^n}{10^4}, \\
+            E(Y) &= \frac{1}{2} \sum_{i=1}^n y_i, \quad \operatorname{Var}(Y) = \frac{1}{4} \sum_{i=1}^n y_i^2 \leq \frac{1}{4} \frac{2^n}{10^4}.
+        \end{aligned}
+    \end{equation*}
+    By Chebyschev's inequality, we have
+    \begin{equation*}
+        P\bigg(\abs{X - E(X)} \geq \lambda \frac{2^{n/2}}{200}\bigg) \leq \frac{1}{\lambda^2}
+    \end{equation*}
+    and similarly for \( Y \).
+    Thus, with probability at least \( 1 - \frac{2}{\lambda^2} \) the random variable \( \sum_{i=1}^n \epsilon_i v_i \) hits the square of side \( \frac{\lambda 2^{n/2}}{100} \) centered at \( \big( E(X), E(Y) \big) \). Since there are \( 2^n \) possible combinations, \( (1 - \frac{2}{\lambda^2}) 2^n \) of them hit the square, which contains \( \frac{\lambda^2 2^n}{10^4} \) lattice points. As soon as \( (1 - \frac{2}{\lambda^2}) 2^n > \frac{\lambda^2 2^n}{10^4} \) (for instance for \( \lambda = 2 \)), there must be two distinct sequences \( (a_1, \dots, a_n), (b_1, \dots, b_n) \) of \( 0 \)'s and \( 1 \)'s such that \( \sum_i a_i v_i = \sum_i b_i v_i \). Define
+    \begin{equation*}
+        I = \{ i \mid a_i = 1 \}, \quad J = \{ j \mid b_j = 1 \}.
+    \end{equation*}
+    Then, \( I' = I \setminus (I \cap J) \) and \( J' = J \setminus (I \cap J) \) are the desired sets.
+\end{solution}
+
+
+\begin{exercise}
+    Prove that for every set \( X \) of at least \( 4k^2 \) distinct residue classes modulo a prime \( p \), there is an integer \( a \) such that the set \( \{ ax \mod p \mid x \in X \} \) intersects every interval in \( \{ 0, 1, \dots, p-1 \} \) of length at least \( \frac{p}{k} \).
+\end{exercise}
+\begin{proof}
+    The idea is to show that, given an interval \( I \) of length at least \( \frac{p}{2k} \) (we will see the reason behind choosing \( \frac{p}{2k} \) and not \( \frac{p}{k} \)), the probability that the above set intersects \( I \) nontrivially is very low, so that we can then union bound and get something smaller than \( 1 \). The trick here is not to consider the set \( \{ ax \mid x \in X \} \) but the set \( C_{ab} = \{ ax + b \mid x \in X \} \), for \( a \in \mathbb{Z}_p^{\times} \) and \( b \in \mathbb{Z}_p \) chosen uniformly and independently. Fix some interval \( I \) of length \( \abs{I} \) and let \( Y = \abs{I \cap C_{ab}} \). The expectation of \( Y \) is
+    \begin{equation*}
+        \begin{aligned}
+            E[Y] &= E\bigg[ \sum_{i \in I} 1_{i \in C_{ab}}  \bigg] \\
+            &= \sum_{i \in I}  E[1_{i \in C_{ab}}] \\
+            &= \sum_{i \in I} \frac{\abs{X}}{p} = \frac{\abs{I} \abs{X}}{p},
+        \end{aligned}
+    \end{equation*}
+    as \( ax + b \) is uniform in \( \mathbb{Z}_p \) for every \( x \in X \). Let us compute \( E[X^2] \):
+    \begin{equation*}
+        \begin{aligned}
+            E[Y^2] &= E\bigg[ \bigg( \sum_{i \in I} 1_{i \in C_{ab}} \bigg)^2  \bigg] \\
+            &= \sum_{i, j \in I} E[1_{i, j \in C_{ab}}] \\
+            &= \sum_{i \in I} E[1_{i \in C_{ab}}] + \sum_{\substack{i, j \in I \\ i \neq j}} E[1_{i, j \in C_{ab}}] \\
+            &= E[Y] + \sum_{\substack{i, j \in I \\ i \neq j}} \frac{\abs{X} (\abs{X} - 1)}{p(p-1)} \\
+            &= \frac{\abs{I} \abs{X}}{p} + \frac{\abs{I} (\abs{I} - 1)\abs{X} (\abs{X} - 1)}{p(p-1)}.
+        \end{aligned}
+    \end{equation*}
+    \textbf{Intermezzo:} justify the penultimate equality.
+
+    Another round of tedious computations gives \( \operatorname{Var}(Y) = \frac{\abs{I} \abs{X}}{p^2(p-1)} (p - \abs{I}) (p - \abs{X}) \). Chebyschev's inequality reads
+    \begin{equation*}
+        P \big(\abs{Y - E[Y]} > \lambda \big) \leq \frac{\operatorname{Var}(Y)}{\lambda^2}.
+    \end{equation*}
+    Note that \( \operatorname{Var}(Y) = \frac{E[Y]}{p(p-1)} (p - \abs{I}) (p - \abs{X}) \). Choose now \( \lambda = c \sqrt{E[Y]} \) for some \( c > 0 \) to be determined. Thus, we get
+    \begin{equation*}
+        \begin{aligned}
+            P \big(\abs{Y - E[Y]} > c \sqrt{E[Y]} \big) &\leq \frac{\operatorname{Var}(Y)}{c^2 E[Y]} \\
+            &= \frac{(p-\abs{I}) (p - \abs{X})}{c^2 p(p-1)} \\
+            &\leq \frac{1}{c^2}.
+        \end{aligned}
+    \end{equation*}
+    We would like to say that \( P(Y = 0) \leq P(\abs{Y-E[Y]} > c \sqrt{E[Y]}) \). This is the case when \( c^2 < E[Y] \). With this in mind, cover \( \{ 0, 1, \dots, p-1 \} \) by \( 2k \) intervals \( I_j \) of length \( \lceil \frac{p}{2k} \rceil \) (this is possible, as \( 2k \lceil \frac{p}{2k} \rceil \geq p \)) and note that if \( \abs{I} = \lceil \frac{p}{2k} \rceil \), \( \frac{\abs{I} \abs{X}}{p} > \frac{p}{2k} \frac{4k^2}{p} = 2k \). Choose \( c = \sqrt{2k + \epsilon} \) in such a way that \( c^2 < \frac{\abs{I_j} \abs{X}}{p} \) for all \( j \).
+
+    Union bound then gives
+    \begin{equation*}
+        P(\exists j \colon I_j \cap C_{ab} = \emptyset) \leq 2k \frac{1}{c^2} = \frac{2k}{2k + \epsilon} < 1.
+    \end{equation*}
+    This shows that with positive probability all intervals \( I_j \) are hit. Finally, if \( I \) is an interval of length at least \( \frac{p}{k} \), it is easy to see that it contains at least one \( I_j \), so all such \( I \)'s are hit with positive probability.
+\end{proof}
+
+
+
+\section{The Local Lemma}
+\label{sec:the local lemma}
+\begin{exercise}[Alon 5.8.2]
+    Prove that for every \( \epsilon > 0 \) there is a finite \( l_0 = l_0(\epsilon) \) and an infinite sequence of bits \( a_1, a_2, a_3, \dots \), \( a_i \in \{ 0, 1 \} \), such that for every \( l > l_0 \) and every \( i \geq 1 \) the two binary vectors \( u = (a_i, \dots, a_{i+l-1}) \) and \( v = (a_{i+l}, \dots, a_{i+2l-1}) \) differ in at least \( (\frac{1}{2} - \epsilon)l \) coordinates.
+\end{exercise}
+
+\begin{solution}
+    Construct an infinite sequence of bits by flipping a fair coin independently for each entry.
+    Denote by \( A_i \) the event that \( u, v \) have Hamming distance less than \( (\frac{1}{2} - \epsilon)l \), i.e.\ they differ in less than \( (\frac{1}{2} - \epsilon)l \) coordinates.
+    \proofstep{bounding the probability of each \( A_i \).}
+    Let
+    \begin{equation*}
+        X_j =
+        \begin{cases}
+            1 & \text{if } a_{i+j} = a_{i+l+j}, \\
+            0 & \text{else}
+        \end{cases}
+    \end{equation*}
+    and let \( X = X_0 + \dots + X_{l-1} \). Note that the \( X_j \)'s are independent \( \frac{1}{2} \)-Bernoulli random variables. Moreover, \( E[X] = \frac{l}{2} \). By Hoeffding's inequality, we get the bound
+    \begin{equation*}
+        P \bigg(X \geq \frac{l}{2} + \epsilon l \bigg) \leq e^{-\frac{2 \epsilon^2 l^2}{l}} = e^{-2 \epsilon^2 l}.
+    \end{equation*}
+    Note that asking for the Hamming distance to be less than \( (\frac{1}{2} - \epsilon) l \) is equivalent to \( X \) being larger than \( \frac{l}{2} + \epsilon l \).
+
+    \proofstep{applying the Local Lemma.}
+    Let \( S \subseteq \mathbb{N} \) be a finite set. Draw a dependency digraph with vertices the \( A_i \) with \( i \in S \) and edges \( (A_i, A_j) \) whenever \( A_i \) and \( A_j \) are not independent. Note that maximum degree of this digraph is \( 4l-1 \) (or \( 4l + 1 \)? It doesn't really matter), as each event \( A_i \) involves \( 2l \) bits. Thus, the symmetric version of the Local Lemma gives that if
+    \begin{equation*}
+        3l e e^{-2 \epsilon^2 l} \leq 1,
+    \end{equation*}
+    which certainly holds for \( l \) large enough, none of the \( A_i \) with \( i \in S \) holds.
+
+    \proofstep{compactness argument.}
+    By Tychonoff's theorem, the space \( 2^{\mathbb{N}} \) of functions \( \mathbb{N} \to \{0, 1\} \) is compact. This is the space of possible sequences of bits. By the above steps, the space \( C_i \) of sequences for which \( A_i \) holds is nonempty. Moreover, it is closed in the topology of \( 2^{\mathbb{N}} \) and, as proven above, any finite intersection is nonempty. By compactness, it follows that \( \cap_{i \in \mathbb{N}} C_i \neq \emptyset \). This concludes the argument.
+\end{solution}
+
+\begin{exercise}[Alon 5.8.3]
+    Let \( G = (V, E) \) be a simple graph and suppose each \( v \in V \) is associated with a set \( S(v) \) of colors of size at least \( 10d \), where \( d > 1 \). Suppose, in addition, that for each \( v \in V \) and \( c \in S(v) \) there are at most \( d \) neighbors \( u \) of \( v \) such that \( c \) lies in \( S(u) \). Prove that there is a proper coloring of \( G \) assigning to each vertex \( v \) a color from its class \( S(v) \).
+\end{exercise}
+\begin{solution}
+    Without loss of generality, we can assume that \( \abs{S(v)} = 10d \) for all \( v \in V \) (just remove excess colors).
+    Color each vertex with a random color from its list independently. Let \( e = \{ v, w \} \) be an edge and \( c \) a color and define \( A_{e, c} \) to be the event that \( c(v) = c(w) = c \). Clearly \( P(A_{e, c}) = \frac{1}{(10d)^2} \). Now, if \( e' = \{ v', w' \} \) is an edge disjoint from \( \{ v, w \} \), the events \( A_{e, c}, A_{e', c'} \) are independent. Thus, we should only look at those edges which intersect \( e \). By the assumptions, there are at most \( 20d^2 \) events \( A_{e', c'} \) that neighbor \( A_{e, c} \) in the dependency digraph, since we have to fix one vertex, say \( v \), which leaves \( 10d \) choices for the color \( c' \) (if \( c' \) in not in \( S(v) \) the events are independent) and at most \( d \) choices for the other vertex \( w' \) so that \( S(v) \cap S(w') \neq \emptyset \). The factor of \( 2 \) comes from the fact that we can fix either \( v \) or \( w \). Now apply the Local Lemma, noting that \( e \frac{20 d^2 + 1}{100 d^2} \leq 1 \).
+\end{solution}
+
+\begin{exercise}[Alon 5.8.4]
+    Let \( G = (V, E) \) be a cycle of length \( 4n \) and let \( V = V_1 \cup V_2 \dots \cup V_n \) be a partition of its \( 4n \) vertices into \( n \) pairwise disjoint subsets, each of cardinality \( 4 \). Is it true that there must be an independent set of \( G \) containing precisely one vertex from each \( V_i \)? (Prove or supply a counter-example.)
+\end{exercise}
+\begin{solution}
+    This solution is taken from \href{https://math.stackexchange.com/questions/788705/prove-or-supply-counter-example-about-graph}{\texttt{this StackExchange post}}.
+
+    Label the vertices \( 1, \dots, 4n \). We call an edge of the form \( (2i, 2i+1) \) (resp.\ \( (2i-i, 2i) \)) \textit{even} (resp.\ \textit{odd}).
+    Partition each \( V_i \) arbitrarily into two subsets \( W_{2i-1}, W_{2i} \) of size \( 2 \). From every \( W_i \), pick \( w_i \) in such a way that \( \{w_i, w_j \} \) is not an odd edge for every \( j \neq i \). This can be done greedily: pick \( w_1 \in W_{1} \), look at the set containing its \enquote{odd} neighbor and pick the other vertex (if the odd neighbor is contained in \( W_1 \), simply move on to \( W_2 \)). Keep going. The reason why we can keep going is that picking a vertex only puts a restriction on one \( W_i \).
+
+    Once this is done, define \( V_i' = \{ w_{2i-1}, w_{2i} \} \) and note that \( V_i' \subseteq V_i \) for all \( i = 1, \dots, n \). Pick now \( v_i' \in V_i' \) in such a way that \( \{ v_iì, v_j' \} \) is not an even edge for every \( j \neq i \). Again, this can be done greedily: pick \( v_1' \) and look at where its \enquote{even} neighbor lies. Pick the other vertex and keep going. The set \( \{ v_1', \dots, v_n' \} \) is desired independent set.
+
+\end{solution}
+
+
+\section{Correlation inequalities}
+\label{sec:correlation inequalities}
+
+\begin{exercise}[Alon 6.5.1]
+    Let \( G \) be a graph and let \( P \) denote the probability that a random subgraph of \( G \) obtained by picking each edge of \( G \) with probability \( \frac{1}{2} \), independently, is connected (and spanning). Let \( Q \) denote the probability that in a random two-coloring of \( G \), where each edge is chosen, randomly and independently, to be either red or blue, the red graph and the blue graph are both connected (and spanning). Is \( Q \leq P^2 \)?
+\end{exercise}
+\begin{solution}
+    Two-coloring is the same as sampling a subgraph \( H \) by independently choosing each edge (the red subgraph is, say, \( H \) while the blue is \( \bar{H} \)). The property that the red graph is connected is then increasing, while the property that the blue graph is connected is decreasing (since adding en edge to \( H \) takes away an edge from \( H \)). By the FKG inequality,
+    \begin{equation*}
+        Q \leq P(H \text{ is connected}) P(\bar{H} \text{ is connected}) = P^2.
+    \end{equation*}
+\end{solution}
+
+\begin{exercise}[Alon 6.5.2]
+    A family of subsets \( \mathcal{F} \) is called \textit{intersecting} if \( F_1 \cap F_2 \neq \emptyset \) for all \( F_1, F_2 \in \mathcal{F} \). Let \( \mathcal{F}_1, \dots, \mathcal{F}_k \) be intersecting families of subsets of \( [n] = \{ 1, \dots, n \} \). Prove that
+    \begin{equation*}
+        \abs{\bigcup_{i=1}^k \mathcal{F}_i} \leq 2^n - 2^{n-k}.
+    \end{equation*}
+\end{exercise}
+\begin{solution}
+    Let us note that \( \abs{\mathcal{F}_i} \leq 2^{n-1} \) for all \( i \), since for all \( A \subseteq [n] \) \( \mathcal{F}_i \) can only contain one between \( A \) and \( A^c \).
+
+    Let us assume now that the \( \mathcal{F}_i \)'s are maximal, i.e.\ they are not contained in any strictly bigger interesecting family. Proving the statement under this assumption is clearly enough.
+    Define \( \mathcal{G}_i = \{ A \subseteq [n] \mid A \cap F \neq \emptyset \ \forall F \in \mathcal{F}_i \} \). Clearly, \( \mathcal{G}_i \) is an increasing family and \( \mathcal{F}_i \subseteq \mathcal{G}_i \) (by assumption). Moreover, maximality of \( \mathcal{F}_i \) implies that \( \mathcal{F}_i = \mathcal{G}_i \). This proves that \( \mathcal{F}_i \) is increasing. Let now \( \mathcal{G}_i = \mathcal{F}_i^c \) and note that \( \mathcal{G}_i \) is decreasing. Hence, by the FKG inequality,
+    \begin{equation*}
+            P \bigg( \bigcap_{i=1}^k \mathcal{G}_i \bigg) \geq \prod_{i=1}^k P(\mathcal{G}_i)
+            = \prod_{i=1}^k \big( 1 - P(\mathcal{F}_i) \big) \geq \frac{1}{2^k},
+    \end{equation*}
+    since \( P(\mathcal{F}_i) \leq \frac{2^{n-1}}{2^n} = \frac{1}{2} \).
+    In other words,
+    \begin{equation*}
+        P \bigg( \bigcup_{i=1}^k \mathcal{F}_i \bigg) \leq 1 - \frac{1}{2^k},
+    \end{equation*}
+    which concludes the proof as \( \abs{\bigcup_{i=1}^k \mathcal{F}_i} = 2^n P\big(\bigcup_{i=1}^k \mathcal{F}_i\big) \).
+\end{solution}
+
+\begin{exercise}[Alon 6.5.3]
+    Show that the probability that in the random graph \( G(2k, 1/2) \) the maximum degree is at most \( k-1 \) is at least \( 1/4^k \).
+\end{exercise}
+\begin{solution}
+    Let \( v_1, \dots, v_{2k} \) be the vertices of \( G \) and let \( A_i \) be the event that \( \deg(v_i) \leq k-1 \). Note that the \( A_i \) are decreasing events, as removing edges only helps. Moreover, \( P(A_i) = \frac{1}{2} \), since \( P \big( \deg(v_i) = j \big) = P \big( \deg(v_i) = n-1-j \big) \). The FKG inequality gives
+    \begin{equation*}
+        P \bigg( \bigcap_{i=1}^{2k} A_i \bigg) \geq \prod_{i=1}^{2k} P(A_i) = \frac{1}{2^{2k}} = \frac{1}{4^k}.
+    \end{equation*}
+\end{solution}
+
+\section{Martingales and tight concentration}
+\label{sec:martingales and tight concentration}
+Recall the definition of the distance \( \rho(A, x) \):
+\begin{equation*}
+    \rho(A, x) = \sup_{\norm{\alpha}=1} \inf_{y \in A} \sum_{x_i \neq y_i} \alpha_i.
+\end{equation*}
+Let us make a remark on the proof of the fact that \( \rho(A, x) = \min_{v \in V(A, x)} \norm{v} \) (cf.\ the section on Talagrand's inequality in Alon's book). Let \( v \in V(A, x) \) achieve this minimum and consider the hyperplane \( W = v + \langle v \rangle^\perp \).
+\begin{claim}
+    The hyperplane \( W \) separates \( V(A, x) \) from the origin in the sense that \( \langle s, v \rangle \geq \langle v, v \rangle \) for all \( s \in V(A, x) \).
+\end{claim}
+\begin{proof}
+    Let \( \lambda \in [0, 1] \) and consider the vector \( \lambda s + (1 - \lambda) v \in V(A, x) \) (recall that \( V(A, x) \) is convex). Since \( v \) achieves the minimum, we must have that \( \norm{\lambda s + (1 - \lambda) v} \geq \norm{v} \), which amounts to
+    \begin{equation*}
+        \lambda^2 \norm{s-v}^2 + 2 \lambda \langle s-v, v \rangle \geq 0.
+    \end{equation*}
+    Suppose \( \langle s, v \rangle < \langle v, v \rangle \) and \( \lambda > 0 \). Thus,
+    \begin{equation*}
+        \lambda \norm{s-v}^2 \geq -2 \langle s-v, v \rangle > 0.
+    \end{equation*}
+    Letting \( \lambda \to 0 \) gives a contradiction.
+\end{proof}
+
+
+\begin{exercise}
+    Let \( G = (V,E) \) be the graph whose vertices are all \( 7^n \) vectors of length \( n \) over \( \mathbb{Z}_7 \), in which two vertices are adjacent if and only if they differ in precisely one coordinate. Let \( U \subseteq V \) be a set of \( 7^{n-1} \) vertices of \( G \), and let \( W \) be the set of all vertices of \( G \) whose distance from \( U \) exceeds \( (c+2) \sqrt{n} \), where \( c > 0 \) is a constant. Prove that \( \abs{W} \leq 7^n e^{-\frac{c^2}{2}} \).
+\end{exercise}
+\begin{solution}
+    Let \( X(v) \) be the Hamming distance between \( v \in \mathbb{Z}_n^7 \) and \( U \) and construct a martingale \( E[X] = X_0, X_1, \dots, X_n = X \) by exposing one coordinate of \( v \) at a time. By Azuma's inequality, we have
+    \begin{equation*}
+        P(X - E[X] < -2 \sqrt{n}) < e^{-\frac{2^2}{2}} = \frac{1}{e^2}.
+    \end{equation*}
+    Note that \( P(X = 0) = \frac{1}{7} \), since \( X = 0 \) if and only if \( X \) hits \( U \) and \( \frac{\abs{U}}{7^n} = \frac{1}{7} \). As \( \frac{1}{e^2} < \frac{1}{7} \), we have \( E[X] \leq 2 \sqrt{n} \). Again, Azuma's inequality gives
+    \begin{equation*}
+        P(X > 2 \sqrt{n} + c \sqrt{n}) \leq P(X > E[X] + c \sqrt{n}) < e^{-\frac{c^2}{2}},
+    \end{equation*}
+    which finishes the argument.
+\end{solution}
+
+
+
+%\printbibliography[
+%    heading=bibintoc,
+%    title={Bibliography}
+%]
+
+\end{document}
